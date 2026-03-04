@@ -29,35 +29,26 @@ export default defineConfig(({ command }) => ({
       //   // target: 'http://localhost:3080',
       //   changeOrigin: true,
       // },
-      '^(/workspace)?/bisheng': {
-        target: "http://localhost:7860",
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => {
-          return path.replace(/^\/workspace/, '');
-        },
-      },
+      // API路由代理
       '/workspace/api': {
         target: 'http://localhost:7860',
         changeOrigin: true,
         secure: false,
         ws: true,
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('Proxying request to:', proxyReq.path);
-          });
-        },
-        rewrite: (path) => {
-          return path.replace(/^\/workspace/, '');
-        },
+        rewrite: (path) => path.replace(/^\/workspace/, ''),
       },
-      '/workspace/tmp-dir': {
-        target: 'http://localhost:7860',
+      // 文件服务代理（MinIO）- 处理 /bisheng 和 /tmp-dir 路径
+      '^(/workspace)?/bisheng': {
+        target: 'http://localhost:9100',  // MinIO 端口
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => {
-          return path.replace(/^\/workspace/, '');
-        },
+        rewrite: (path) => path.replace(/^\/workspace/, ''),
+      },
+      '^(/workspace)?/tmp-dir': {
+        target: 'http://localhost:9100',  // MinIO 端口
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/workspace/, ''),
       },
     },
   },
