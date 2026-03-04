@@ -1,6 +1,8 @@
 FROM python:3.10-slim
 
-ARG PANDOC_ARCH=amd64
+# Auto-detect architecture for pandoc download
+ARG TARGETARCH
+ARG PANDOC_ARCH=${TARGETARCH:-amd64}
 ENV PANDOC_ARCH=$PANDOC_ARCH
 ENV PATH="${PATH}:/root/.local/bin"
 
