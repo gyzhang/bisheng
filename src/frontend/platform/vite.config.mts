@@ -16,7 +16,7 @@ const app_env = { BASE_URL: '' } // /custom
 // Use environment variable to determine the target.
 //  const target = process.env.VITE_PROXY_TARGET || "http://127.0.0.1:7860";
 const target = process.env.VITE_PROXY_TARGET || "http://localhost:7860";  // 本地开发环境
-const fileServiceTarget = "http://localhost:7860";  // 本地开发环境，通过后端代理访问 MinIO
+const fileServiceTarget = "http://localhost:9100";  // 本地开发环境，直接访问 MinIO（Docker 映射到 9100）
 
 // 公共代理配置
 const commonProxyOptions = {
