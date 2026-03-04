@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Optional
 
 from dashscope.audio.asr import Recognition, RecognitionResult
@@ -25,6 +26,9 @@ class AliyunASRClient(BaseASRClient):
 
     # Time-consuming operation, asynchronous execution
     def sync_func(self, temp_file, language=None, model=None):
+        # Verify file exists before reading to avoid race condition
+        if not os.path.exists(temp_file):
+            raise FileNotFoundError(f"Audio file not found: {temp_file}")
         result: RecognitionResult = self.recognition.call(temp_file, api_key=self.api_key, language=language,
                                                           model=model)
         return result
