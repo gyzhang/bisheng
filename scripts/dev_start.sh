@@ -5,7 +5,49 @@
 
 set -e
 
+# Parse command line arguments
+SERVICE_TYPE="all"  # Default to start all services
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --service|-s)
+            SERVICE_TYPE="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 [--service|--help]"
+            echo ""
+            echo "Options:"
+            echo "  --service, -s TYPE   Specify which service to start (default: all)"
+            echo "                       TYPE can be:"
+            echo "                         - all:      Start both backend and frontend"
+            echo "                         - backend:  Start backend only"
+            echo "                         - frontend: Start frontend only"
+            echo ""
+            echo "Examples:"
+            echo "  $0                    # Start all services"
+            echo "  $0 -s backend         # Start backend only"
+            echo "  $0 --service frontend # Start frontend only"
+            exit 0
+            ;;
+        *)
+            echo "❌ Unknown option: $1"
+            echo "Use --help for usage information."
+            exit 1
+            ;;
+    esac
+done
+
+# Validate service type
+if [[ ! "$SERVICE_TYPE" =~ ^(all|backend|frontend)$ ]]; then
+    echo "❌ Invalid service type: $SERVICE_TYPE"
+    echo "Valid options are: all, backend, frontend"
+    echo "Use --help for usage information."
+    exit 1
+fi
+
 echo "🚀 Starting BISHENG Local Development Environment..."
+echo "   Service Type: $SERVICE_TYPE"
 echo ""
 
 # Get the absolute path of project root
@@ -62,112 +104,126 @@ mkdir -p logs
 export BS_DATA_DIR="/tmp/bisheng_data"
 
 # Start backend API service
-echo "🌐 Starting Backend API Service on http://localhost:7860"
-echo "   Log file: logs/backend_api.log"
-nohup python -m uvicorn bisheng.main:app \
-    --host 0.0.0.0 \
-    --port 7860 \
-    --reload \
-    > logs/backend_api.log 2>&1 &
-
-API_PID=$!
-echo $API_PID > logs/backend_api.pid
-echo "✅ Backend API started (PID: $API_PID)"
-
-sleep 3
-
-# Start Celery worker
-echo "👷 Starting Celery Worker"
-echo "   Log file: logs/backend_worker.log"
-nohup python -m celery -A bisheng.worker.main worker \
-    --loglevel=info \
-    -Q workflow_celery,knowledge_celery \
-    > logs/backend_worker.log 2>&1 &
-
-WORKER_PID=$!
-echo $WORKER_PID > logs/backend_worker.pid
-echo "✅ Celery Worker started (PID: $WORKER_PID)"
-
-# Start Celery beat (scheduled tasks)
-echo "⏰ Starting Celery Beat"
-echo "   Log file: logs/backend_beat.log"
-nohup python -m celery -A bisheng.worker.main beat \
-    --loglevel=info \
-    > logs/backend_beat.log 2>&1 &
-
-BEAT_PID=$!
-echo $BEAT_PID > logs/backend_beat.pid
-echo "✅ Celery Beat started (PID: $BEAT_PID)"
-
-# Wait for backend to be ready
-echo ""
-echo "⏳ Waiting for backend to be ready..."
-sleep 5
+if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "backend" ]]; then
+    echo "🌐 Starting Backend API Service on http://localhost:7860"
+    echo "   Log file: logs/backend_api.log"
+    nohup python -m uvicorn bisheng.main:app \
+        --host 0.0.0.0 \
+        --port 7860 \
+        --reload \
+        > logs/backend_api.log 2>&1 &
+    
+    API_PID=$!
+    echo $API_PID > logs/backend_api.pid
+    echo "✅ Backend API started (PID: $API_PID)"
+    
+    sleep 3
+    
+    # Start Celery worker
+    echo "👷 Starting Celery Worker"
+    echo "   Log file: logs/backend_worker.log"
+    nohup python -m celery -A bisheng.worker.main worker \
+        --loglevel=info \
+        -Q workflow_celery,knowledge_celery \
+        > logs/backend_worker.log 2>&1 &
+    
+    WORKER_PID=$!
+    echo $WORKER_PID > logs/backend_worker.pid
+    echo "✅ Celery Worker started (PID: $WORKER_PID)"
+    
+    # Start Celery beat (scheduled tasks)
+    echo "⏰ Starting Celery Beat"
+    echo "   Log file: logs/backend_beat.log"
+    nohup python -m celery -A bisheng.worker.main beat \
+        --loglevel=info \
+        > logs/backend_beat.log 2>&1 &
+    
+    BEAT_PID=$!
+    echo $BEAT_PID > logs/backend_beat.pid
+    echo "✅ Celery Beat started (PID: $BEAT_PID)"
+    
+    # Wait for backend to be ready
+    echo ""
+    echo "⏳ Waiting for backend to be ready..."
+    sleep 5
+else
+    echo "⏭️  Skipping backend services"
+fi
 
 # Start frontend services
-echo ""
-echo "🎨 Starting Frontend Services..."
-echo ""
-
-# Start Platform (Admin/Management)
-echo "🖥️  Starting Platform (Admin/Management Portal)..."
-cd "$PROJECT_ROOT/src/frontend/platform"
-nohup npm run start > logs/platform.log 2>&1 &
-PLATFORM_PID=$!
-echo $PLATFORM_PID > logs/platform.pid
-echo "✅ Platform started (PID: $PLATFORM_PID)"
-echo "   Access URL: http://localhost:3001/"
-echo "   Login URL: http://localhost:3001/admin/login"
-echo "   Log file: logs/platform.log"
-
-sleep 2
-
-# Start Client (User Chat Interface)
-echo ""
-echo "💬 Starting Client (User Chat Interface)..."
-cd "$PROJECT_ROOT/src/frontend/client"
-nohup npm run start > logs/client.log 2>&1 &
-CLIENT_PID=$!
-echo $CLIENT_PID > logs/client.pid
-echo "✅ Client started (PID: $CLIENT_PID)"
-echo "   Access URL: http://localhost:4001/workspace/"
-echo "   Login URL: http://localhost:4001/workspace/admin/login"
-echo "   Log file: logs/client.log"
+if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "frontend" ]]; then
+    echo ""
+    echo "🎨 Starting Frontend Services..."
+    echo ""
+    
+    # Start Platform (Admin/Management)
+    echo "🖥️  Starting Platform (Admin/Management Portal)..."
+    cd "$PROJECT_ROOT/src/frontend/platform"
+    nohup npm run start > logs/platform.log 2>&1 &
+    PLATFORM_PID=$!
+    echo $PLATFORM_PID > logs/platform.pid
+    echo "✅ Platform started (PID: $PLATFORM_PID)"
+    echo "   Access URL: http://localhost:3001/"
+    echo "   Login URL: http://localhost:3001/admin/login"
+    echo "   Log file: logs/platform.log"
+    
+    sleep 2
+    
+    # Start Client (User Chat Interface)
+    echo ""
+    echo "💬 Starting Client (User Chat Interface)..."
+    cd "$PROJECT_ROOT/src/frontend/client"
+    nohup npm run start > logs/client.log 2>&1 &
+    CLIENT_PID=$!
+    echo $CLIENT_PID > logs/client.pid
+    echo "✅ Client started (PID: $CLIENT_PID)"
+    echo "   Access URL: http://localhost:4001/workspace/"
+    echo "   Login URL: http://localhost:4001/workspace/admin/login"
+    echo "   Log file: logs/client.log"
+else
+    echo "⏭️  Skipping frontend services"
+fi
 
 # Final status
 echo ""
 echo "=========================================="
-echo "✅ BISHENG All Services Started!"
+echo "✅ BISHENG Services Started!"
 echo "=========================================="
 echo ""
-echo "Backend Services:"
-echo "  🌐 Backend API:    http://localhost:7860"
-echo "  📊 Swagger UI:     http://localhost:7860/docs"
-echo "  🔧 ReDoc:          http://localhost:7860/redoc"
-echo ""
-echo "Frontend Services:"
-echo "  🖥️  Platform:        http://localhost:3001/ (Admin Portal)"
-echo "  💬 Client:          http://localhost:4001/workspace/ (User Interface)"
-echo ""
-echo "Docker Dependencies:"
-echo "  📊 MySQL:          localhost:3306"
-echo "  💾 Redis:          localhost:6379"
-echo "  🔍 Elasticsearch:  localhost:9200"
-echo "  🗄️  Milvus:         localhost:19530"
-echo "  📦 MinIO:          localhost:9100"
-echo ""
+if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "backend" ]]; then
+    echo "Backend Services:"
+    echo "  🌐 Backend API:    http://localhost:7860"
+    echo "  📊 Swagger UI:     http://localhost:7860/docs"
+    echo "  🔧 ReDoc:          http://localhost:7860/redoc"
+    echo ""
+fi
+if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "frontend" ]]; then
+    echo "Frontend Services:"
+    echo "  🖥️  Platform:        http://localhost:3001/ (Admin Portal)"
+    echo "  💬 Client:          http://localhost:4001/workspace/ (User Interface)"
+    echo ""
+fi
+if [[ "$SERVICE_TYPE" == "all" ]]; then
+    echo "Docker Dependencies:"
+    echo "  📊 MySQL:          localhost:3306"
+    echo "  💾 Redis:          localhost:6379"
+    echo "  🔍 Elasticsearch:  localhost:9200"
+    echo "  🗄️  Milvus:         localhost:19530"
+    echo "  📦 MinIO:          localhost:9100"
+    echo ""
+fi
 echo "Logs:"
-echo "  API:      tail -f logs/backend_api.log"
-echo "  Worker:   tail -f logs/backend_worker.log"
-echo "  Beat:     tail -f logs/backend_beat.log"
-echo "  Platform: tail -f logs/platform.log"
-echo "  Client:   tail -f logs/client.log"
+[[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "backend" ]] && echo "  API:      tail -f logs/backend_api.log"
+[[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "backend" ]] && echo "  Worker:   tail -f logs/backend_worker.log"
+[[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "backend" ]] && echo "  Beat:     tail -f logs/backend_beat.log"
+[[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "frontend" ]] && echo "  Platform: tail -f logs/platform.log"
+[[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "frontend" ]] && echo "  Client:   tail -f logs/client.log"
 echo ""
 echo "Stop services:"
-echo "  ./scripts/dev_stop.sh"
+echo "  ./scripts/dev_stop.sh [-s service_type]"
 echo ""
 echo "Restart services:"
-echo "  ./scripts/dev_restart.sh"
+echo "  ./scripts/dev_restart.sh [-s service_type]"
 echo "=========================================="
 echo ""
 echo "🎯 Quick Start:"
