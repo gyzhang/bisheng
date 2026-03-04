@@ -92,11 +92,16 @@ const AuthContextProvider = ({
   });
   const logoutUser = useLogoutUserMutation({
     onSuccess: (data) => {
+      // 本地开发环境跳转到 platform 应用（3001 端口）
+      const redirectUrl = window.location.hostname === 'localhost'
+        ? 'http://localhost:3001/admin'
+        : `${location.origin}/admin`; // __APP_ENV__.BISHENG_HOST is '/admin'
+      
       setUserContext({
         token: undefined,
         isAuthenticated: false,
         // user: undefined,
-        redirect: `${location.origin}${__APP_ENV__.BISHENG_HOST}` // data.redirect ?? bsConfig?.host,
+        redirect: redirectUrl // data.redirect ?? bsConfig?.host,
       });
     },
     onError: (error) => {
