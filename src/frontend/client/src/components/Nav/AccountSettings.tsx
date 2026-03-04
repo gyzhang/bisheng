@@ -90,7 +90,13 @@ function AccountSettings() {
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-60 rounded-2xl'>
-          {user?.plugins?.includes('backend') && <a href={__APP_ENV__.BISHENG_HOST} target='_blank'>
+          {user?.plugins?.includes('backend') && <a href={(() => {
+            // 本地开发环境直接访问 platform 应用（3001 端口）
+            const baseUrl = __APP_ENV__.BISHENG_HOST || '/admin';
+            return window.location.hostname === 'localhost' 
+              ? `http://localhost:3001${baseUrl}` 
+              : baseUrl;
+          })()} target='_blank'>
             <DropdownMenuItem className='select-item text-sm font-normal'>
               <GanttChartIcon className="icon-md" />
               {localize('com_nav_admin_panel')}

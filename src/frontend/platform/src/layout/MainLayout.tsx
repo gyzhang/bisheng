@@ -124,7 +124,13 @@ export default function MainLayout() {
                                     {user.user_name} <ChevronDown className="inline-block mt-[-2px]" />
                                 </span>
                             }>
-                            {isMenu('frontend') && <SelectHoverItem onClick={() => window.open('/workspace/')}><GanttChartIcon className="w-4 h-4 mr-1" /><span>{t('menu.workspace')}</span></SelectHoverItem>}
+                            {isMenu('frontend') && <SelectHoverItem onClick={() => {
+                                // 本地开发环境直接访问 client 应用（4001 端口）
+                                const targetUrl = (window as any).location.hostname === 'localhost' 
+                                    ? 'http://localhost:4001/workspace/' 
+                                    : (window as any).__APP_ENV__.BASE_URL + '/workspace/';
+                                window.open(targetUrl);
+                            }}><GanttChartIcon className="w-4 h-4 mr-1" /><span>{t('menu.workspace')}</span></SelectHoverItem>}
                             <SelectHoverItem onClick={JumpResetPage}><Lock className="w-4 h-4 mr-1" /><span>{t('menu.changePwd')}</span></SelectHoverItem>
                             <SelectHoverItem onClick={handleLogout}><QuitIcon className="w-4 h-4 mr-1" /><span>{t('menu.logout')}</span></SelectHoverItem>
                         </SelectHover>
