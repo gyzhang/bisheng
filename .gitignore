@@ -264,3 +264,5 @@ docker/office/bisheng/*.gz
 
 CLAUDE.md
 !src/backend/bisheng/telemetry_search/**/*.pyc
+src/backend/pandoc-3.9-x86_64-macOS.pkg
+src/backend/celerybeat-schedule.db
