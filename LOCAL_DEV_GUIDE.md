@@ -242,6 +242,82 @@ docker-compose -p bisheng down -v
 
 ---
 
+## 🔧 重要脚本：patch_code.sh
+
+### 作用说明
+
+`src/backend/patch_code.sh` 用于在**本地开发环境**中应用 langchain_openai 库的补丁，使其支持 `reasoning_content` 字段（AI 模型的推理思考过程内容）。
+
+### 为什么需要这个补丁？
+
+- **Docker 生产环境**：Dockerfile 构建时会自动应用补丁（`RUN patch -p1 < ...`）
+- **本地开发环境**：使用 conda 虚拟环境，不会自动应用补丁，需要手动执行
+
+### 何时需要执行？
+
+#### ✅ 必须执行的情况：
+
+1. **初次设置开发环境**
+   ```bash
+   # 安装依赖后
+   uv pip install -e . --system
+   bash src/backend/patch_code.sh bisheng
+   ```
+
+2. **重新安装依赖后**
+   ```bash
+   # 每次重装都要重新打补丁
+   uv pip install -e . --system
+   bash src/backend/patch_code.sh bisheng
+   ```
+
+3. **使用 reasoning 相关功能时**
+   - 测试 Qwen、DeepSeek 等支持推理的模型
+   - 需要查看模型的思考过程
+
+#### ❌ 不需要执行的情况：
+
+1. **不使用 reasoning 功能**
+   - 只开发普通聊天、知识库等功能
+
+2. **Docker 容器内开发**
+   - Docker 镜像已包含补丁
+
+### 使用方法
+
+```bash
+# 方式 1：指定 conda环境名称
+bash src/backend/patch_code.sh bisheng
+
+# 方式 2：使用当前激活的 Python 环境
+conda activate bisheng
+bash src/backend/patch_code.sh
+```
+
+### 验证补丁是否生效
+
+```bash
+# 检查补丁是否已应用
+python -c "import langchain_openai; print('✓ 环境就绪')"
+
+# 或者查看库文件
+grep -n "reasoning_content" $(python -c 'from distutils.sysconfig import get_python_lib(); print(get_python_lib())')/langchain_openai/chat_models/base.py
+```
+
+### 自动化建议
+
+建议在 `dev_start.sh` 中添加自动检查逻辑：
+
+```bash
+# 启动服务前检查补丁
+if ! grep -q "reasoning_content" $(python -c 'from distutils.sysconfig import get_python_lib(); print(get_python_lib())')/langchain_openai/chat_models/base.py 2>/dev/null; then
+    echo "⚠️ 检测到 langchain_openai 补丁未应用，正在应用..."
+    bash src/backend/patch_code.sh
+fi
+```
+
+---
+
 ## 📝 日志查看
 
 ### 日志文件位置
