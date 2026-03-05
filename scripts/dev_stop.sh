@@ -50,19 +50,22 @@ echo "🛑 Stopping BISHENG Local Development Services..."
 echo "   Service Type: $SERVICE_TYPE"
 echo ""
 
-cd "$(dirname "$0")/../src/backend"
+# Get the absolute path of project root
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+LOGS_DIR="$PROJECT_ROOT/logs"
 
 # Stop frontend services first
 if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "frontend" ]]; then
     echo "⏹️  Stopping Frontend Services..."
     
     # Stop Platform
-    if [ -f logs/platform.pid ]; then
-        PLATFORM_PID=$(cat logs/platform.pid)
+    if [ -f "$LOGS_DIR/platform/platform.pid" ]; then
+        PLATFORM_PID=$(cat "$LOGS_DIR/platform/platform.pid")
         if ps -p $PLATFORM_PID > /dev/null 2>&1; then
             echo "   Stopping Platform (PID: $PLATFORM_PID)"
             kill $PLATFORM_PID 2>/dev/null || true
-            rm logs/platform.pid
+            rm "$LOGS_DIR/platform/platform.pid"
         fi
     fi
     
@@ -70,12 +73,12 @@ if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "frontend" ]]; then
     lsof -ti:3001 | xargs kill -9 2>/dev/null || true
     
     # Stop Client
-    if [ -f logs/client.pid ]; then
-        CLIENT_PID=$(cat logs/client.pid)
+    if [ -f "$LOGS_DIR/client/client.pid" ]; then
+        CLIENT_PID=$(cat "$LOGS_DIR/client/client.pid")
         if ps -p $CLIENT_PID > /dev/null 2>&1; then
             echo "   Stopping Client (PID: $CLIENT_PID)"
             kill $CLIENT_PID 2>/dev/null || true
-            rm logs/client.pid
+            rm "$LOGS_DIR/client/client.pid"
         fi
     fi
     
@@ -94,32 +97,32 @@ if [[ "$SERVICE_TYPE" == "all" || "$SERVICE_TYPE" == "backend" ]]; then
     echo "⏹️  Stopping Backend Services..."
     
     # Stop Backend API
-    if [ -f logs/backend_api.pid ]; then
-        API_PID=$(cat logs/backend_api.pid)
+    if [ -f "$LOGS_DIR/backend/backend_api.pid" ]; then
+        API_PID=$(cat "$LOGS_DIR/backend/backend_api.pid")
         if ps -p $API_PID > /dev/null 2>&1; then
             echo "   Stopping Backend API (PID: $API_PID)"
             kill $API_PID 2>/dev/null || true
-            rm logs/backend_api.pid
+            rm "$LOGS_DIR/backend/backend_api.pid"
         fi
     fi
     
     # Stop Celery Worker
-    if [ -f logs/backend_worker.pid ]; then
-        WORKER_PID=$(cat logs/backend_worker.pid)
+    if [ -f "$LOGS_DIR/backend/backend_worker.pid" ]; then
+        WORKER_PID=$(cat "$LOGS_DIR/backend/backend_worker.pid")
         if ps -p $WORKER_PID > /dev/null 2>&1; then
             echo "   Stopping Celery Worker (PID: $WORKER_PID)"
             kill $WORKER_PID 2>/dev/null || true
-            rm logs/backend_worker.pid
+            rm "$LOGS_DIR/backend/backend_worker.pid"
         fi
     fi
     
     # Stop Celery Beat
-    if [ -f logs/backend_beat.pid ]; then
-        BEAT_PID=$(cat logs/backend_beat.pid)
+    if [ -f "$LOGS_DIR/backend/backend_beat.pid" ]; then
+        BEAT_PID=$(cat "$LOGS_DIR/backend/backend_beat.pid")
         if ps -p $BEAT_PID > /dev/null 2>&1; then
             echo "   Stopping Celery Beat (PID: $BEAT_PID)"
             kill $BEAT_PID 2>/dev/null || true
-            rm logs/backend_beat.pid
+            rm "$LOGS_DIR/backend/backend_beat.pid"
         fi
     fi
     
