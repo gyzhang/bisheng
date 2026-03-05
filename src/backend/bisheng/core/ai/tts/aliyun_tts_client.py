@@ -1,23 +1,23 @@
 import asyncio
 from typing import Optional
 
+import dashscope
 from dashscope.audio.tts_v2 import SpeechSynthesizer
 
 from ..base import BaseTTSClient
 
 
 class AliyunTTSClient(BaseTTSClient):
-    """Alibaba CloudTTSClient"""
+    """Alibaba Cloud TTS Client"""
 
     def __init__(self, api_key: str, **kwargs):
         """
-        Initialize Alibaba CloudTTSClient
+        Initialize Alibaba Cloud TTS Client
         """
         self.model = kwargs.get("model", "cosyvoice-v2")
         self.voice = kwargs.get("voice", "longxiaochun_v2")
-        self.app_key = api_key
+        dashscope.api_key = api_key
         self.synthesizer = SpeechSynthesizer(model=self.model, voice=self.voice)
-        self.synthesizer.request.apikey = self.app_key
 
     def sync_func(self, text: str):
         audio = self.synthesizer.call(text=text)
