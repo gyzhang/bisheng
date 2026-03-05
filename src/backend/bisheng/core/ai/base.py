@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 import tempfile
 import uuid
@@ -45,30 +46,41 @@ class BaseASRClient(ABC):
         else:
             raise ValueError("Invalid audio input type")
         tmp_dir = tempfile.gettempdir()
-
+        
         tmp_file_path = os.path.join(tmp_dir, uuid.uuid4().hex + '.wav')
-        # ffmpeg Convert To16kSampling Rate MonowavDoc.
+        # ffmpeg Convert To16k Sampling Rate MonowavDoc.
         converted_file_path = os.path.join(tmp_dir, uuid.uuid4().hex + '_16k_mono.wav')
-
+        
         try:
             async with aiofiles.open(tmp_file_path, 'wb') as f:
                 await f.write(audio_bytes)
-
+        
             command = f'ffmpeg -y -i "{tmp_file_path}" -ar 16000 -ac 1 "{converted_file_path}"'
+            logging.info(f"ASR ffmpeg command: {command}")
             process = await asyncio.create_subprocess_shell(
                 command,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-
-            await process.communicate()
-
-            return await self._transcribe(converted_file_path, language=language, model=model, **kwargs)
+        
+            stdout, stderr = await process.communicate()
+            logging.info(f"ASR ffmpeg exit code: {process.returncode}")
+            if stderr:
+                logging.error(f"ASR ffmpeg stderr: {stderr.decode()}")
+                    
+            # Check if converted file exists after ffmpeg
+            logging.info(f"ASR converted file exists after ffmpeg: {os.path.exists(converted_file_path)}")
+                    
+            # Call _transcribe and handle file cleanup inside it
+            logging.info(f"ASR base.transcribe: calling _transcribe with {converted_file_path}, exists: {os.path.exists(converted_file_path)}")
+            result = await self._transcribe(converted_file_path, language=language, model=model, **kwargs)
+            logging.info(f"ASR base.transcribe: _transcribe returned")
+            return result
         finally:
+            # Only clean up the original temp file here
+            # converted_file_path will be cleaned by _transcribe after ASR processing
             if os.path.exists(tmp_file_path):
                 os.remove(tmp_file_path)
-            if os.path.exists(converted_file_path):
-                os.remove(converted_file_path)
 
     @abstractmethod
     async def _transcribe(self, audio: str, language: Optional[str] = None, model: Optional[str] = None,
