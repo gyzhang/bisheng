@@ -2,7 +2,7 @@ import { cn } from "@/utils";
 import { useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 
-export function SelectHoverItem({ children, ...props }) {
+export function SelectHoverItem({ children, ...props }: any) {
 
     return <div {...props} className="relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-[#EBF0FF] dark:text-gray-50 dark:hover:bg-gray-700">
         {children}
@@ -10,7 +10,7 @@ export function SelectHoverItem({ children, ...props }) {
 }
 
 
-export function SelectHover({ triagger, className, children }) {
+export function SelectHover({ triagger, className, children }: { triagger: any; className?: any; children: any }) {
     const [open, setOpen] = useState(false);
     const timerRef = useRef(null);
 
