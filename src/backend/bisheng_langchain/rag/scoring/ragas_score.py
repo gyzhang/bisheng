@@ -9,8 +9,27 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import pandas as pd
 from datasets import Dataset
 from loguru import logger
-from bisheng_ragas import evaluate
-from bisheng_ragas.metrics import AnswerCorrectness, AnswerCorrectnessBisheng, AnswerRecallBisheng
+
+try:
+    from ragas import evaluate
+    from ragas.metrics.collections import AnswerCorrectness
+    RAGAS_AVAILABLE = True
+    RAGAS_TYPE = "open_source"
+    AnswerCorrectnessBisheng = None
+    AnswerRecallBisheng = None
+except ImportError:
+    try:
+        from bisheng_ragas import evaluate
+        from bisheng_ragas.metrics import AnswerCorrectness, AnswerCorrectnessBisheng, AnswerRecallBisheng
+        RAGAS_AVAILABLE = True
+        RAGAS_TYPE = "bisheng"
+    except ImportError:
+        evaluate = None
+        AnswerCorrectness = None
+        AnswerCorrectnessBisheng = None
+        AnswerRecallBisheng = None
+        RAGAS_AVAILABLE = False
+        RAGAS_TYPE = None
 
 
 @dataclass
@@ -34,8 +53,13 @@ class RagScore:
 
     def ragas_answer_correctness(self, dataset: Dataset) -> pd.DataFrame:
         # answer_correctness, 只考虑事实相似度
-        weights = [1.0, 0.0]
-        answer_correctness = AnswerCorrectness(weights=weights, batch_size=self.batch_size)
+        if RAGAS_TYPE == "open_source":
+            from ragas.metrics import AnswerCorrectness
+            weights = [1.0, 0.0]
+            answer_correctness = AnswerCorrectness(weights=weights, batch_size=self.batch_size)
+        else:
+            weights = [1.0, 0.0]
+            answer_correctness = AnswerCorrectness(weights=weights, batch_size=self.batch_size)
         result = evaluate(
             dataset=dataset,
             metrics=[
@@ -47,6 +71,9 @@ class RagScore:
         return df
 
     def ragas_answer_correctness_bisheng(self, dataset: Dataset) -> pd.DataFrame:
+        if RAGAS_TYPE != "bisheng":
+            logger.warning("AnswerCorrectnessBisheng only available in bisheng-ragas, using standard AnswerCorrectness instead")
+            return self.ragas_answer_correctness(dataset)
         answer_correctness = AnswerCorrectnessBisheng(batch_size=self.batch_size)
         result = evaluate(
             dataset=dataset,
@@ -57,6 +84,9 @@ class RagScore:
         return df
 
     def ragas_answer_recall_bisheng(self, dataset: Dataset) -> pd.DataFrame:
+        if RAGAS_TYPE != "bisheng":
+            logger.warning("AnswerRecallBisheng only available in bisheng-ragas, skipping this metric")
+            return pd.DataFrame()
         answer_recall =AnswerRecallBisheng(batch_size=self.batch_size, 
                                            whether_gtsplit=self.whether_gtsplit)
         result = evaluate(

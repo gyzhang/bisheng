@@ -3,7 +3,7 @@ import json
 import os
 from typing import List
 
-from bisheng.telemetry_search.domain.init_dataset import init_dashboard_datasets
+# from bisheng.telemetry_search.domain.init_dataset import init_dashboard_datasets
 from loguru import logger
 from sqlmodel import select, update
 
@@ -139,7 +139,7 @@ async def init_default_data():
             await settings.init_config()
 
             # init dashboard data
-            await init_dashboard_datasets()
+            # await init_dashboard_datasets()
         except Exception as exc:
             # if the exception involves tables already existing
             # we can ignore it

@@ -1,6 +1,13 @@
 from typing import Any, Awaitable, Callable, Dict, List, Optional, Union
 
-from autogen import Agent, ConversableAgent
+try:
+    from autogen import Agent, ConversableAgent
+except ImportError:
+    try:
+        from autogen.agentchat import Agent, ConversableAgent
+    except ImportError:
+        Agent = object
+        ConversableAgent = object
 
 
 class AutoGenCustomRole(ConversableAgent):

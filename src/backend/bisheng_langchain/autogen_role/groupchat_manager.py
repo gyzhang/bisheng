@@ -3,7 +3,17 @@ import logging
 from typing import List, Optional
 
 import httpx
-from autogen import Agent, GroupChat, GroupChatManager
+
+try:
+    from autogen import Agent, GroupChat, GroupChatManager
+except ImportError:
+    try:
+        from autogen.agentchat import Agent, GroupChat, GroupChatManager
+    except ImportError:
+        Agent = object
+        GroupChat = object
+        GroupChatManager = object
+
 from langchain_core.language_models import BaseLanguageModel
 
 from .user import AutoGenUser

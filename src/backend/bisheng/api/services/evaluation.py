@@ -15,15 +15,24 @@ from fastapi.encoders import jsonable_encoder
 from loguru import logger
 
 try:
-    from bisheng_ragas import evaluate
-    from bisheng_ragas.llms.langchain import LangchainLLM
-    from bisheng_ragas.metrics import AnswerCorrectnessBisheng
-    BISHENG_RAGAS_AVAILABLE = True
+    from ragas import evaluate
+    from ragas.llms import LangchainLLMWrapper
+    RAGAS_AVAILABLE = True
+    RAGAS_TYPE = "open_source"
 except ImportError:
-    evaluate = None
-    LangchainLLM = None
-    AnswerCorrectnessBisheng = None
-    BISHENG_RAGAS_AVAILABLE = False
+    try:
+        from bisheng_ragas import evaluate
+        from bisheng_ragas.llms.langchain import LangchainLLM
+        from bisheng_ragas.metrics import AnswerCorrectnessBisheng
+        RAGAS_AVAILABLE = True
+        RAGAS_TYPE = "bisheng"
+        AnswerCorrectnessBisheng = AnswerCorrectnessBisheng
+    except ImportError:
+        evaluate = None
+        LangchainLLM = None
+        AnswerCorrectnessBisheng = None
+        RAGAS_AVAILABLE = False
+        RAGAS_TYPE = None
 
 from bisheng.api.services.assistant_agent import AssistantAgent
 from bisheng.api.services.flow import FlowService
@@ -364,7 +373,11 @@ async def add_evaluation_task(evaluation_id: int):
                                                         one.get('question', ""))
 
         _llm = await LLMService.get_evaluation_llm_object(evaluation.user_id)
-        llm = LangchainLLM(_llm)
+        if RAGAS_TYPE == "open_source":
+            from ragas.llms import LangchainLLMWrapper
+            llm = LangchainLLMWrapper(_llm)
+        else:
+            llm = LangchainLLM(_llm)
         data_samples = {
             "question": [one.get('question') for one in csv_data],
             "answer": [one.get('answer') for one in csv_data],
@@ -372,8 +385,13 @@ async def add_evaluation_task(evaluation_id: int):
         }
 
         dataset = Dataset.from_dict(data_samples)
-        answer_correctness_bisheng = AnswerCorrectnessBisheng(llm=llm, human_prompt=evaluation.prompt)
-        score = await asyncio.to_thread(evaluate, dataset, [answer_correctness_bisheng])
+        if RAGAS_TYPE == "open_source":
+            from ragas.metrics.collections import AnswerCorrectness
+            answer_correctness = AnswerCorrectness()
+            score = await asyncio.to_thread(evaluate, dataset, [answer_correctness])
+        else:
+            answer_correctness_bisheng = AnswerCorrectnessBisheng(llm=llm, human_prompt=evaluation.prompt)
+            score = await asyncio.to_thread(evaluate, dataset, [answer_correctness_bisheng])
         df = score.to_pandas()
         result = df.to_dict(orient="list")
         logger.debug(f'evaluation id = {evaluation_id} result: {result}')

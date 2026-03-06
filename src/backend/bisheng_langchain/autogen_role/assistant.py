@@ -10,7 +10,7 @@ except ImportError:
     try:
         from autogen.agentchat.conversable_agent import ConversableAgent as AssistantAgent
     except ImportError:
-        AssistantAgent = None
+        AssistantAgent = object
 
 from langchain_core.language_models import BaseLanguageModel
 

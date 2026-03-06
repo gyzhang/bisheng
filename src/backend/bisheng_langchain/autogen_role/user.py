@@ -3,7 +3,15 @@ import logging
 from typing import Callable, Dict, Optional
 
 import httpx
-from autogen import UserProxyAgent
+
+try:
+    from autogen import UserProxyAgent
+except ImportError:
+    try:
+        from autogen.agentchat.user_proxy_agent import UserProxyAgent
+    except ImportError:
+        UserProxyAgent = object
+
 from langchain_core.language_models import BaseLanguageModel
 
 logger = logging.getLogger(__name__)
