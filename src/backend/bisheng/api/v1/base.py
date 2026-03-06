@@ -1,6 +1,6 @@
 from bisheng.interface.utils import extract_input_variables_from_prompt
 from bisheng.template.frontend_node.base import FrontendNode
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from pydantic import field_validator, BaseModel
 
 

@@ -9,13 +9,21 @@ from typing import List
 
 import numpy as np
 import pandas as pd
-from bisheng_ragas import evaluate
-from bisheng_ragas.llms.langchain import LangchainLLM
-from bisheng_ragas.metrics import AnswerCorrectnessBisheng
 from datasets import Dataset
 from fastapi import UploadFile, HTTPException
 from fastapi.encoders import jsonable_encoder
 from loguru import logger
+
+try:
+    from bisheng_ragas import evaluate
+    from bisheng_ragas.llms.langchain import LangchainLLM
+    from bisheng_ragas.metrics import AnswerCorrectnessBisheng
+    BISHENG_RAGAS_AVAILABLE = True
+except ImportError:
+    evaluate = None
+    LangchainLLM = None
+    AnswerCorrectnessBisheng = None
+    BISHENG_RAGAS_AVAILABLE = False
 
 from bisheng.api.services.assistant_agent import AssistantAgent
 from bisheng.api.services.flow import FlowService

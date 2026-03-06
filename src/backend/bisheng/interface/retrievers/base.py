@@ -7,7 +7,13 @@ from bisheng.template.frontend_node.retrievers import RetrieverFrontendNode
 from loguru import logger
 from bisheng.utils.util import build_template_from_class, build_template_from_method
 from bisheng_langchain import retrievers as bisheng_retrievers
-from langchain.retrievers import MultiQueryRetriever
+try:
+    from langchain.retrievers import MultiQueryRetriever
+except ImportError:
+    try:
+        from langchain_core.retrievers import MultiQueryRetriever
+    except ImportError:
+        MultiQueryRetriever = None
 from langchain_community import retrievers
 
 

@@ -5,12 +5,11 @@ from queue import Queue
 from typing import Any, Dict, List, Union
 
 from fastapi import WebSocket
-from langchain.callbacks.base import AsyncCallbackHandler, BaseCallbackHandler
-from langchain.schema import AgentFinish, LLMResult
-from langchain.schema.agent import AgentAction
-from langchain.schema.document import Document
-from langchain.schema.messages import BaseMessage
-from langchain_core.messages import ToolMessage
+from langchain_core.callbacks import AsyncCallbackHandler, BaseCallbackHandler
+from langchain_core.agents import AgentAction, AgentFinish
+from langchain_core.outputs import LLMResult
+from langchain_core.documents import Document
+from langchain_core.messages import BaseMessage, ToolMessage
 
 from bisheng.api.v1.schemas import ChatResponse
 from bisheng.database.models.message import ChatMessage as ChatMessageModel

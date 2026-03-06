@@ -1,0 +1,16 @@
+Using Python 3.10.19 environment at: /opt/miniconda3/envs/bisheng
+Using Python 3.10.19 environment at: /opt/miniconda3/envs/bisheng
+error: Request failed after 3 retries
+error: Request failed after 3 retries
+  Caused by: Failed to fetch: `https://pypi.org/simple/langchain-community/`
+  Caused by: error sending request for url (https://pypi.org/simple/langchain-community/)
+  Caused by: client error (Connect)
+  Caused by: tunnel error: failed to create underlying connection
+  Caused by: tcp connect error
+  Caused by: Connection refused (os error 61)
+  Caused by: Failed to fetch: `https://pypi.org/simple/langchain-community/`
+  Caused by: error sending request for url (https://pypi.org/simple/langchain-community/)
+  Caused by: client error (Connect)
+  Caused by: tunnel error: failed to create underlying connection
+  Caused by: tcp connect error
+  Caused by: Connection refused (os error 61)

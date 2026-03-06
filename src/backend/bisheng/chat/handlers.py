@@ -4,8 +4,8 @@ import time
 from queue import Queue
 from typing import Dict
 
-from langchain.chains.llm import LLMChain
-from langchain_core.prompts.prompt import PromptTemplate
+from langchain_classic.chains.llm import LLMChain
+from langchain_core.prompts import PromptTemplate
 from loguru import logger
 from sqlmodel import select
 

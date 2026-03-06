@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING, ClassVar, Collection, Dict, List
 from venv import logger
 
 import requests
-from langchain.schema.document import Document
-from langchain.vectorstores.base import VectorStore, VectorStoreRetriever
+from langchain_core.documents import Document
+from langchain_core.vectorstores import VectorStore, VectorStoreRetriever
 from pydantic import ConfigDict, model_validator, Field
 
 if TYPE_CHECKING:
-    from langchain.callbacks.manager import (
+    from langchain_core.callbacks import (
         AsyncCallbackManagerForRetrieverRun,
         CallbackManagerForRetrieverRun,
     )

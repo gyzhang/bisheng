@@ -1,6 +1,6 @@
 import re
 from collections import defaultdict
-from typing import ClassVar, Dict, List, Optional, Union
+from typing import ClassVar, Dict, List, Optional, Union, Type
 
 from bisheng.template.field.base import TemplateField
 from bisheng.template.frontend_node.constants import CLASSES_TO_REMOVE, FORCE_SHOW_FIELDS
@@ -8,6 +8,11 @@ from bisheng.template.frontend_node.formatter import field_formatters
 from bisheng.template.template.base import Template
 from bisheng.utils import constants
 from pydantic import BaseModel, Field
+
+
+def is_subclass(clazz: Type) -> Type:
+    """Check if a class is a valid subclass and return it."""
+    return clazz
 
 
 class FieldFormatters(BaseModel):

@@ -3,12 +3,12 @@
 import importlib
 from typing import Any, Type
 
-from langchain.agents import Agent
-from langchain.base_language import BaseLanguageModel
-from langchain.chains.base import Chain
-from langchain.chat_models.base import BaseChatModel
-from langchain.prompts import PromptTemplate
-from langchain.tools import BaseTool
+from langchain_classic.agents import Agent
+from langchain_core.language_models import BaseLanguageModel
+from langchain_classic.chains.base import Chain
+from langchain_core.language_models import BaseChatModel
+from langchain_core.prompts import PromptTemplate
+from langchain_core.tools import BaseTool
 
 
 def import_module(module_path: str) -> Any:
@@ -89,7 +89,10 @@ def import_inputoutput(input_output: str) -> Any:
 
 def import_output_parser(output_parser: str) -> Any:
     """Import output parser from output parser name"""
-    return import_module(f'from langchain.output_parsers import {output_parser}')
+    try:
+        return import_module(f'from langchain_core.output_parsers import {output_parser}')
+    except ImportError:
+        return import_module(f'from langchain.output_parsers import {output_parser}')
 
 
 def import_chat_llm(llm: str) -> BaseChatModel:
@@ -104,7 +107,10 @@ def import_chain_contribute_llm(llm: str) -> BaseChatModel:
 
 def import_retriever(retriever: str) -> Any:
     """Import retriever from retriever name"""
-    return import_module(f'from langchain.retrievers import {retriever}')
+    try:
+        return import_module(f'from langchain_core.retrievers import {retriever}')
+    except ImportError:
+        return import_module(f'from langchain.retrievers import {retriever}')
 
 
 def import_autogenRoles(autogen: str) -> Any:
@@ -113,7 +119,10 @@ def import_autogenRoles(autogen: str) -> Any:
 
 def import_memory(memory: str) -> Any:
     """Import memory from memory name"""
-    return import_module(f'from langchain.memory import {memory}')
+    try:
+        return import_module(f'from langchain_classic.memory import {memory}')
+    except ImportError:
+        return import_module(f'from langchain.memory import {memory}')
 
 
 def import_prompt(prompt: str) -> Type[PromptTemplate]:

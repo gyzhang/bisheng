@@ -4,7 +4,7 @@ from bisheng.template.field.base import TemplateField
 from bisheng.template.frontend_node.base import FrontendNode
 from bisheng.template.frontend_node.constants import DEFAULT_PROMPT, HUMAN_PROMPT, SYSTEM_PROMPT
 from bisheng.template.template.base import Template
-from langchain.agents.mrkl import prompt
+from langchain_classic.agents.mrkl import prompt
 
 
 class PromptFrontendNode(FrontendNode):

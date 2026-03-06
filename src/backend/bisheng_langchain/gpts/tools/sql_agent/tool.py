@@ -6,8 +6,20 @@ from langchain_core.callbacks import CallbackManagerForToolRun
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import BaseTool
-from langgraph.graph.graph import CompiledGraph
-from langgraph.prebuilt import create_react_agent
+
+try:
+    from langgraph.graph.graph import CompiledGraph
+except ImportError:
+    try:
+        from langgraph.checkpoint.base import CompiledGraph
+    except ImportError:
+        CompiledGraph = None
+
+try:
+    from langgraph.prebuilt import create_react_agent
+except ImportError:
+    from langchain.prebuilt import create_react_agent
+
 from pydantic import BaseModel, Field, ConfigDict
 
 _agent_system_prompt = """You are an autonomous agent that answers user questions by querying an SQL database through the provided tools.

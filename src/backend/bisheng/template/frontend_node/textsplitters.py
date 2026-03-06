@@ -1,6 +1,6 @@
 from bisheng.template.field.base import TemplateField
 from bisheng.template.frontend_node.base import FrontendNode
-from langchain.text_splitter import Language
+from langchain_text_splitters import Language
 
 
 class TextSplittersFrontendNode(FrontendNode):

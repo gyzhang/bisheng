@@ -6,11 +6,12 @@ import re
 from typing import Optional, Union
 from pydantic import Field
 
-from langchain.agents.agent import AgentOutputParser
-from langchain.agents.structured_chat.prompt import FORMAT_INSTRUCTIONS
-from langchain.output_parsers import OutputFixingParser
-from langchain.schema import AgentAction, AgentFinish, OutputParserException
-from langchain.schema.language_model import BaseLanguageModel
+from langchain_classic.agents.agent import AgentOutputParser
+from langchain_classic.agents.structured_chat.prompt import FORMAT_INSTRUCTIONS
+from langchain_core.output_parsers import OutputFixingParser
+from langchain_core.agents import AgentAction, AgentFinish
+from langchain_core.outputs import OutputParserException
+from langchain_core.language_models import BaseLanguageModel
 
 logger = logging.getLogger(__name__)
 

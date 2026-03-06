@@ -2,7 +2,14 @@ import json
 import time
 from typing import List, Any
 
-from langchain.chains.combine_documents import create_stuff_documents_chain
+try:
+    from langchain.chains.combine_documents import create_stuff_documents_chain
+except ImportError:
+    try:
+        from langchain_core.chains import create_stuff_documents_chain
+    except ImportError:
+        create_stuff_documents_chain = None
+
 from langchain_core.documents import Document
 from langchain_core.prompts import (ChatPromptTemplate, HumanMessagePromptTemplate,
                                     SystemMessagePromptTemplate)

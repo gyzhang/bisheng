@@ -3,7 +3,7 @@ from typing import Optional
 from bisheng.template.field.base import TemplateField
 from bisheng.template.frontend_node.base import FrontendNode
 from bisheng.template.template.base import Template
-from langchain.agents import types
+from langchain_classic.agents import types
 
 NON_CHAT_AGENTS = {
     agent_type: agent_class

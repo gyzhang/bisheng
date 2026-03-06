@@ -1,6 +1,10 @@
 from typing import List, Optional
 
-from langchain.embeddings.base import Embeddings
+try:
+    from langchain.embeddings.base import Embeddings
+except ImportError:
+    from langchain_core.embeddings import Embeddings
+
 from langchain_community.embeddings.dashscope import BATCH_SIZE
 from pydantic import Field
 

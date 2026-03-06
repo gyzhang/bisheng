@@ -9,7 +9,7 @@ from bisheng.template.frontend_node.agents import AgentFrontendNode
 from loguru import logger
 from bisheng.utils.util import build_template_from_class, build_template_from_method
 from bisheng_langchain import agents as bisheng_agents
-from langchain.agents import types
+from langchain_classic.agents import types
 
 
 class AgentCreator(LangChainTypeCreator):

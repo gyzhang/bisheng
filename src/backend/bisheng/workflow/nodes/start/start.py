@@ -2,7 +2,7 @@ import datetime
 import json
 from typing import Any, Dict
 
-from langchain.memory import ConversationBufferWindowMemory
+from langchain_classic.memory import ConversationBufferWindowMemory
 
 from bisheng.chat.types import IgnoreException
 from bisheng.database.models.group import GroupDao

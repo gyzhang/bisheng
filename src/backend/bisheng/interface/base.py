@@ -6,8 +6,8 @@ from bisheng.template.field.base import TemplateField
 from bisheng.template.frontend_node.base import FrontendNode
 from bisheng.template.template.base import Template
 from loguru import logger
-from langchain.agents import AgentExecutor
-from langchain.chains.base import Chain
+from langchain_classic.agents import AgentExecutor
+from langchain_classic.chains.base import Chain
 from pydantic import BaseModel
 
 # Assuming necessary imports for Field, Template, and FrontendNode classes

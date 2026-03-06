@@ -3,9 +3,10 @@ import json
 from pathlib import Path
 from typing import Any, Coroutine, Dict, List, Optional, Tuple, Union
 
-from langchain.chains.base import Chain
-from langchain.schema import AgentAction, Document
-from langchain.vectorstores.base import VectorStore
+from langchain_classic.chains.base import Chain
+from langchain_core.agents import AgentAction
+from langchain_core.documents import Document
+from langchain_core.vectorstores import VectorStore
 from loguru import logger
 from pydantic import BaseModel
 from sqlmodel import select

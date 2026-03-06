@@ -3,8 +3,9 @@ import json
 from typing import Any, Dict, List
 
 import orjson
-from langchain.agents import ZeroShotAgent
-from langchain.schema import BaseOutputParser, Document
+from langchain_classic.agents import ZeroShotAgent
+from langchain_core.output_parsers import BaseOutputParser
+from langchain_core.documents import Document
 
 from bisheng.common.utils.util import orjson_dumps
 

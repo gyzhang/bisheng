@@ -1,21 +1,22 @@
 from typing import Any, List, Optional, Sequence, Tuple, Union
 
 from bisheng.interface.base import CustomAgentExecutor
-from langchain.agents import (AgentExecutor, AgentType, BaseSingleActionAgent, Tool, ZeroShotAgent,
+from langchain_classic.agents import (AgentExecutor, AgentType, BaseSingleActionAgent, Tool, ZeroShotAgent,
                               initialize_agent)
-from langchain.agents.agent_toolkits.vectorstore.prompt import PREFIX as VECTORSTORE_PREFIX
-from langchain.agents.agent_toolkits.vectorstore.prompt import \
+from langchain_classic.agents.agent_toolkits.vectorstore.prompt import PREFIX as VECTORSTORE_PREFIX
+from langchain_classic.agents.agent_toolkits.vectorstore.prompt import \
     ROUTER_PREFIX as VECTORSTORE_ROUTER_PREFIX
-from langchain.agents.agent_toolkits.vectorstore.toolkit import (VectorStoreInfo,
+from langchain_classic.agents.agent_toolkits.vectorstore.toolkit import (VectorStoreInfo,
                                                                  VectorStoreRouterToolkit,
                                                                  VectorStoreToolkit)
-from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
-from langchain.agents.openai_functions_agent.base import OpenAIFunctionsAgent
-from langchain.agents.openai_tools.base import create_openai_tools_agent
-from langchain.base_language import BaseLanguageModel
-from langchain.chains import LLMChain
-from langchain.memory.buffer import ConversationBufferMemory
-from langchain.memory.chat_memory import BaseChatMemory
+from langchain_classic.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
+from langchain_classic.agents.openai_functions_agent.base import OpenAIFunctionsAgent
+from langchain_classic.agents.openai_tools.base import create_openai_tools_agent
+from langchain_core.language_models import BaseLanguageModel
+from langchain_classic.chains import LLMChain
+from langchain_classic.memory import ConversationBufferMemory
+from langchain_classic.memory.chat_memory import BaseChatMemory
+from langchain_classic.base_memory import BaseMemory
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.agent_toolkits.json.prompt import JSON_PREFIX, JSON_SUFFIX
 from langchain_community.agent_toolkits.json.toolkit import JsonToolkit
@@ -24,7 +25,6 @@ from langchain_community.tools.sql_database.prompt import QUERY_CHECKER
 from langchain_community.utilities.sql_database import SQLDatabase
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain_core.callbacks import BaseCallbackManager, Callbacks
-from langchain_core.memory import BaseMemory
 from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_core.prompts.chat import (BaseMessagePromptTemplate, ChatPromptTemplate,
                                          HumanMessagePromptTemplate, MessagesPlaceholder)
@@ -209,13 +209,21 @@ class SQLAgent(CustomAgentExecutor):
         # The right code should be this, but there is a problem with tools = toolkit.get_tools()
         # related to `OPENAI_API_KEY`
         # return create_sql_agent(llm=llm, toolkit=toolkit, verbose=True)
-        from langchain.prompts import PromptTemplate
-        from langchain.tools.sql_database.tool import (
-            InfoSQLDatabaseTool,
-            ListSQLDatabaseTool,
-            QuerySQLCheckerTool,
-            QuerySQLDataBaseTool,
-        )
+        from langchain_core.prompts import PromptTemplate
+        try:
+            from langchain.tools.sql_database.tool import (
+                InfoSQLDatabaseTool,
+                ListSQLDatabaseTool,
+                QuerySQLCheckerTool,
+                QuerySQLDataBaseTool,
+            )
+        except ImportError:
+            from langchain_community.agent_toolkits.sql.tool import (
+                InfoSQLDatabaseTool,
+                ListSQLDatabaseTool,
+                QuerySQLCheckerTool,
+                QuerySQLDataBaseTool,
+            )
 
         llmchain = LLMChain(
             llm=llm,

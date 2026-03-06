@@ -3,8 +3,16 @@ import logging
 from typing import Callable, Dict, Optional
 
 import httpx
-from autogen import AssistantAgent
-from langchain.base_language import BaseLanguageModel
+
+try:
+    from autogen import AssistantAgent
+except ImportError:
+    try:
+        from autogen.agentchat.conversable_agent import ConversableAgent as AssistantAgent
+    except ImportError:
+        AssistantAgent = None
+
+from langchain_core.language_models import BaseLanguageModel
 
 logger = logging.getLogger(__name__)
 

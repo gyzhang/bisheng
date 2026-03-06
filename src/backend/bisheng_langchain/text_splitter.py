@@ -13,9 +13,8 @@ from enum import Enum
 from typing import (AbstractSet, Any, Callable, Collection, Dict, Iterable, List, Literal, Optional,
                     Sequence, Tuple, Type, TypedDict, TypeVar, Union, cast)
 
-from langchain.docstore.document import Document
-from langchain.schema import BaseDocumentTransformer
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_text_splitters import RecursiveCharacterTextSplitter, TextSplitter
 
 logger = logging.getLogger(__name__)
 

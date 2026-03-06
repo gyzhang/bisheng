@@ -8,10 +8,27 @@ from typing import Any, Dict, List, Optional, Union
 
 import aiofiles
 import requests
-from langchain.embeddings.base import Embeddings
-from langchain.schema.document import Document
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores.base import VectorStore
+
+try:
+    from langchain.embeddings.base import Embeddings
+except ImportError:
+    from langchain_core.embeddings import Embeddings
+
+try:
+    from langchain.schema.document import Document
+except ImportError:
+    from langchain_core.documents import Document
+
+try:
+    from langchain.text_splitter import CharacterTextSplitter
+except ImportError:
+    from langchain_text_splitters import CharacterTextSplitter
+
+try:
+    from langchain.vectorstores.base import VectorStore
+except ImportError:
+    from langchain_core.vectorstores import VectorStore
+
 from langchain_community.document_loaders import (
     BSHTMLLoader,
     PyPDFLoader,

@@ -3,14 +3,14 @@ from typing import Any, Dict, List, Optional, Type, Union
 from bisheng.interface.base import CustomChain
 from bisheng.interface.utils import extract_input_variables_from_prompt
 from bisheng_langchain.chains.question_answering import load_qa_chain
-from langchain.base_language import BaseLanguageModel
-from langchain.callbacks.manager import CallbackManagerForChainRun
-from langchain.chains import ConversationChain, LLMChain
-from langchain.chains.summarize import load_summarize_chain
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate
-from langchain.schema import BaseMemory
-from langchain.schema.prompt_template import BasePromptTemplate
+from langchain_core.language_models import BaseLanguageModel
+from langchain_core.callbacks import CallbackManagerForChainRun
+from langchain_classic.chains import ConversationChain, LLMChain
+from langchain_classic.chains.summarize import load_summarize_chain
+from langchain_classic.memory import ConversationBufferMemory
+from langchain_core.prompts import PromptTemplate
+from langchain_classic.base_memory import BaseMemory
+from langchain_core.prompts import BasePromptTemplate
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 from pydantic import Field, model_validator
 

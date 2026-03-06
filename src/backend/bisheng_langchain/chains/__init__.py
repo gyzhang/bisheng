@@ -1,4 +1,8 @@
-from bisheng_langchain.chains.autogen.auto_gen import AutoGenChain
+try:
+    from bisheng_langchain.chains.autogen.auto_gen import AutoGenChain
+except ImportError:
+    AutoGenChain = None
+
 from bisheng_langchain.chains.combine_documents.stuff import StuffDocumentsChain
 from bisheng_langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
 from bisheng_langchain.chains.retrieval.retrieval_chain import RetrievalChain

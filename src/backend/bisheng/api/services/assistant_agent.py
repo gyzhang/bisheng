@@ -9,7 +9,6 @@ from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import AIMessage, HumanMessage, BaseMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import BaseTool, Tool
-from langchain_core.utils.function_calling import format_tool_to_openai_tool
 from langgraph.prebuilt import create_react_agent
 from loguru import logger
 
@@ -284,7 +283,7 @@ class AssistantAgent(AssistantUtils):
                     {
                         'system': self.assistant.prompt,
                         'message': message,
-                        'tools': [format_tool_to_openai_tool(t) for t in self.tools]
+                        'tools': [t.dict() for t in self.tools]
                     },
                     f,
                     ensure_ascii=False)

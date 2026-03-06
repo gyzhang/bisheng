@@ -1,56 +1,40 @@
 from typing import Any, List, Tuple
 
-from langchain.callbacks.manager import Callbacks
-from langchain.chains.combine_documents.stuff import StuffDocumentsChain as StuffDocumentsChainOld
-from langchain.docstore.document import Document
+from langchain_core.callbacks import Callbacks
+from langchain_core.documents import Document
+from langchain_core.runnables import Runnable
 
 
-class StuffDocumentsChain(StuffDocumentsChainOld):
-
+class StuffDocumentsChain(Runnable):
     token_max: int = -1
 
-    def combine_docs(self,
-                     docs: List[Document],
-                     callbacks: Callbacks = None,
-                     **kwargs: Any) -> Tuple[str, dict]:
-        """Stuff all documents into one prompt and pass to LLM.
+    def __init__(self, llm, document_variable_name: str = "context", **kwargs):
+        super().__init__(**kwargs)
+        self.llm = llm
+        self.document_variable_name = document_variable_name
 
-        Args:
-            docs: List of documents to join together into one variable
-            callbacks: Optional callbacks to pass along
-            **kwargs: additional parameters to use to get inputs to LLMChain.
+    def invoke(self, input_dict, config=None, **kwargs):
+        docs = input_dict.get(self.document_variable_name, [])
+        if not isinstance(docs, list):
+            docs = [docs]
 
-        Returns:
-            The first element returned is the single string output. The second
-            element returned is a dictionary of other keys to return.
-        """
-        inputs = self._get_inputs(docs, **kwargs)
-        # print('inputs:', len(inputs['context']))
-        # print('prompt_length:', self.prompt_length(docs, **kwargs))
+        text = "\n\n".join([doc.page_content if hasattr(doc, 'page_content') else str(doc) for doc in docs])
+
         if self.token_max > 0:
-            inputs[self.document_variable_name] = inputs[
-                self.document_variable_name][:self.token_max]
-        # Call predict on the LLM.
-        return self.llm_chain.predict(callbacks=callbacks, **inputs), {}
+            text = text[:self.token_max]
 
-    async def acombine_docs(self,
-                            docs: List[Document],
-                            callbacks: Callbacks = None,
-                            **kwargs: Any) -> Tuple[str, dict]:
-        """Stuff all documents into one prompt and pass to LLM.
+        input_dict[self.document_variable_name] = text
+        return self.llm.invoke(input_dict, config=config, **kwargs)
 
-        Args:
-            docs: List of documents to join together into one variable
-            callbacks: Optional callbacks to pass along
-            **kwargs: additional parameters to use to get inputs to LLMChain.
+    async def ainvoke(self, input_dict, config=None, **kwargs):
+        docs = input_dict.get(self.document_variable_name, [])
+        if not isinstance(docs, list):
+            docs = [docs]
 
-        Returns:
-            The first element returned is the single string output. The second
-            element returned is a dictionary of other keys to return.
-        """
-        inputs = self._get_inputs(docs, **kwargs)
+        text = "\n\n".join([doc.page_content if hasattr(doc, 'page_content') else str(doc) for doc in docs])
+
         if self.token_max > 0:
-            inputs[self.document_variable_name] = inputs[
-                self.document_variable_name][:self.token_max]
-        # Call predict on the LLM.
-        return await self.llm_chain.apredict(callbacks=callbacks, **inputs), {}
+            text = text[:self.token_max]
+
+        input_dict[self.document_variable_name] = text
+        return await self.llm.ainvoke(input_dict, config=config, **kwargs)

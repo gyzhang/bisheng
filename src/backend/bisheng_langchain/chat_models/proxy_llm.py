@@ -9,12 +9,12 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Mapping, Optional, 
 from pydantic import ConfigDict, model_validator, Field
 
 from bisheng_langchain.utils import requests
-from langchain.callbacks.manager import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
-from langchain.chat_models.base import BaseChatModel
-from langchain.schema import ChatGeneration, ChatResult
-from langchain.schema.messages import (AIMessage, BaseMessage, ChatMessage, FunctionMessage,
+from langchain_core.callbacks import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
+from langchain_core.language_models import BaseChatModel
+from langchain_core.outputs import ChatGeneration, ChatResult
+from langchain_core.messages import (AIMessage, BaseMessage, ChatMessage, FunctionMessage,
                                        HumanMessage, SystemMessage)
-from langchain.utils import get_from_dict_or_env
+from langchain_core.utils import get_from_dict_or_env
 from tenacity import (before_sleep_log, retry, retry_if_exception_type, stop_after_attempt,
                       wait_exponential)
 

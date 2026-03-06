@@ -6,12 +6,12 @@ from typing import Any, ClassVar, Dict, Type
 from bisheng.interface.custom import CustomComponent
 from bisheng.interface.wrappers.base import wrapper_creator
 from bisheng.utils import validate
-from langchain.agents import Agent
-from langchain.base_language import BaseLanguageModel
-from langchain.chains.base import Chain
-from langchain.chat_models.base import BaseChatModel
-from langchain.prompts import PromptTemplate
-from langchain_community.tools import BaseTool
+from langchain_classic.agents import Agent
+from langchain_core.language_models import BaseLanguageModel
+from langchain_classic.chains.base import Chain
+from langchain_core.language_models import BaseChatModel
+from langchain_core.prompts import PromptTemplate
+from langchain_core.tools import BaseTool
 
 
 def import_module(module_path: str) -> Any:
@@ -120,7 +120,10 @@ def import_memory(memory: str) -> Any:
     from bisheng.interface.memories.base import memory_creator
     if memory in memory_creator.type_to_loader_dict:
         return memory_creator.type_to_loader_dict[memory]
-    return import_module(f'from langchain.memory import {memory}')
+    try:
+        return import_module(f'from langchain_classic.memory import {memory}')
+    except ImportError:
+        return import_module(f'from langchain.memory import {memory}')
 
 
 def import_class(class_path: str) -> Any:
@@ -137,7 +140,10 @@ def import_prompt(prompt: str) -> Type[PromptTemplate]:
     if prompt in prompt_creator.type_to_loader_dict:
         return prompt_creator.type_to_loader_dict[prompt]
 
-    return import_class(f'langchain.prompts.{prompt}')
+    try:
+        return import_class(f'langchain_core.prompts.{prompt}')
+    except ImportError:
+        return import_class(f'langchain.prompts.{prompt}')
 
 
 def import_wrapper(wrapper: str) -> Any:

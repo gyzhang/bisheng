@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from fastapi.encoders import jsonable_encoder
-from langchain.memory import ConversationBufferWindowMemory
+from langchain_classic.memory import ConversationBufferWindowMemory
 
 from bisheng.api.services.base import BaseService
 from bisheng.api.v1.schema.workflow import WorkflowEvent, WorkflowEventType, WorkflowInputSchema, WorkflowInputItem, \

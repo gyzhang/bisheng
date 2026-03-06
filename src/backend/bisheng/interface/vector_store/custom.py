@@ -3,11 +3,28 @@ from ast import literal_eval
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 import jieba
-from langchain.chains.llm import LLMChain
-from langchain.docstore.document import Document
-from langchain.embeddings.base import Embeddings
-from langchain.utils import get_from_dict_or_env
-from langchain.vectorstores.base import VectorStore
+from langchain_classic.chains.llm import LLMChain
+
+try:
+    from langchain_core.documents import Document
+except ImportError:
+    from langchain.docstore.document import Document
+
+try:
+    from langchain_core.embeddings import Embeddings
+except ImportError:
+    from langchain.embeddings.base import Embeddings
+
+try:
+    from langchain.utils import get_from_dict_or_env
+except ImportError:
+    get_from_dict_or_env = None
+
+try:
+    from langchain_core.vectorstores import VectorStore
+except ImportError:
+    from langchain.vectorstores.base import VectorStore
+
 from langchain_community.vectorstores.milvus import Milvus as MilvusLangchain
 from langchain_core.language_models import BaseLLM
 from langchain_core.prompts import PromptTemplate

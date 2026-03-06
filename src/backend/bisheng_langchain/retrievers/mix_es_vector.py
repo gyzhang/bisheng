@@ -1,8 +1,9 @@
 from typing import List
 
-from langchain.callbacks.manager import (AsyncCallbackManagerForRetrieverRun,
+from langchain_core.callbacks import (AsyncCallbackManagerForRetrieverRun,
                                          CallbackManagerForRetrieverRun)
-from langchain.schema import BaseRetriever, Document
+from langchain_core.retrievers import BaseRetriever
+from langchain_core.documents import Document
 
 
 class MixEsVectorRetriever(BaseRetriever):

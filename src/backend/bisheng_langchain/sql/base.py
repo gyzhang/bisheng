@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
 
-from langchain.callbacks.manager import AsyncCallbackManagerForChainRun, CallbackManagerForChainRun
-from langchain.chains.llm import LLMChain
-from langchain.prompts.prompt import PromptTemplate
+from langchain_core.callbacks import AsyncCallbackManagerForChainRun, CallbackManagerForChainRun
+from langchain_classic.chains.llm import LLMChain
+from langchain_core.prompts import PromptTemplate
 from langchain_community.tools.sql_database.prompt import QUERY_CHECKER
 from langchain_experimental.sql import SQLDatabaseChain as SQLDatabaseChainExperimental
 

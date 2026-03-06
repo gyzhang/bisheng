@@ -6,8 +6,8 @@ from typing import Any, Callable, Iterable, List, Optional, Tuple, Union
 from uuid import uuid4
 
 import numpy as np
-from langchain.docstore.document import Document
-from langchain.embeddings.base import Embeddings
+from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
 from langchain_community.vectorstores.milvus import Milvus as MilvusLangchain
 from langchain_community.vectorstores.utils import maximal_marginal_relevance
 from pymilvus.exceptions import ConnectionNotExistException

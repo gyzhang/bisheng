@@ -1,7 +1,12 @@
 from typing import Dict, List, Optional, Type
 
 from bisheng.interface.utils import extract_input_variables_from_prompt
-from langchain.prompts import PromptTemplate
+
+try:
+    from langchain.prompts import PromptTemplate
+except ImportError:
+    from langchain_core.prompts import PromptTemplate
+
 from pydantic import model_validator
 
 # Steps to create a BaseCustomPrompt:

@@ -10,12 +10,12 @@ import requests
 from pydantic import ConfigDict, model_validator, Field
 
 from bisheng_langchain.utils.requests import Requests
-from langchain.callbacks.manager import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
-from langchain.chat_models.base import BaseChatModel
-from langchain.schema import ChatGeneration, ChatResult
-from langchain.schema.messages import (AIMessage, BaseMessage, ChatMessage, FunctionMessage,
+from langchain_core.callbacks import AsyncCallbackManagerForLLMRun, CallbackManagerForLLMRun
+from langchain_core.language_models import BaseChatModel
+from langchain_core.messages import (AIMessage, BaseMessage, ChatMessage, FunctionMessage,
                                        HumanMessage, SystemMessage)
-from langchain.utils import get_from_dict_or_env
+from langchain_core.outputs import ChatGeneration, ChatResult
+from langchain_core.utils import get_from_dict_or_env
 from langchain_core.language_models.llms import create_base_retry_decorator
 
 # from requests.exceptions import HTTPError

@@ -7,8 +7,7 @@ from typing import Any, Dict, List
 
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
-
-from langchain.callbacks.manager import (
+from langchain_core.callbacks import (
     AsyncCallbackManagerForRetrieverRun,
     CallbackManagerForRetrieverRun,
 )

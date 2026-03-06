@@ -1,6 +1,13 @@
 from typing import List, Mapping
 
-from langchain.chains.router.base import Chain, MultiRouteChain, RouterChain
+try:
+    from langchain.chains.router.base import Chain, MultiRouteChain, RouterChain
+except ImportError:
+    from langchain_core.runnables import Runnable as Chain
+    from langchain_core.runnables import Runnable as RouterChain
+
+    class MultiRouteChain:
+        pass
 
 
 class MultiRuleChain(MultiRouteChain):

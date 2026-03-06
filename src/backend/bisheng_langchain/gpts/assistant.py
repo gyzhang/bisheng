@@ -6,7 +6,7 @@ import httpx
 import yaml
 from bisheng_langchain.gpts.load_tools import get_all_tool_names, load_tools
 from bisheng_langchain.gpts.utils import import_by_type, import_class
-from langchain.tools import BaseTool
+from langchain_core.tools import BaseTool
 from langchain_core.language_models.base import LanguageModelLike
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.runnables import RunnableBinding

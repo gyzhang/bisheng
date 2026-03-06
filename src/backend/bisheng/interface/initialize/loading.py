@@ -4,13 +4,13 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Sequence, Type
 
 import httpx
 import openai
-from langchain.agents import agent as agent_module
-from langchain.agents.agent import AgentExecutor
-from langchain.agents.agent_toolkits.base import BaseToolkit
-from langchain.agents.tools import BaseTool
-from langchain.chains.base import Chain
-from langchain.document_loaders.base import BaseLoader
-from langchain.vectorstores.base import VectorStore
+from langchain_classic.agents import agent as agent_module
+from langchain_classic.agents import AgentExecutor
+from langchain_classic.agents.agent_toolkits.base import BaseToolkit
+from langchain_core.tools import BaseTool
+from langchain_classic.chains.base import Chain
+from langchain_core.document_loaders import BaseLoader
+from langchain_core.vectorstores import VectorStore
 from langchain_community.utils.openai import is_openai_v1
 from loguru import logger
 from pydantic import SecretStr, ValidationError, create_model
@@ -610,7 +610,7 @@ def instantiate_textsplitter(
             params['separators'] = (params['separators'].encode().decode('unicode-escape'))
         text_splitter = class_object(**params)
     else:
-        from langchain.text_splitter import Language
+        from langchain_text_splitters import Language
 
         language = params.pop('separator_type', None)
         params['language'] = Language(language)

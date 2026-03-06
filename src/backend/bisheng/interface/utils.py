@@ -6,7 +6,7 @@ from io import BytesIO
 
 import yaml
 from PIL.Image import Image
-from langchain.base_language import BaseLanguageModel
+from langchain_core.language_models import BaseLanguageModel
 
 from bisheng.chat.config import ChatConfig
 from bisheng.common.services.config_service import settings

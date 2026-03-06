@@ -7,7 +7,10 @@ from bisheng.graph.vertex.base import Vertex
 from bisheng.graph.vertex.types import FileToolVertex, LLMVertex, ToolkitVertex
 from bisheng.interface.tools.constants import FILE_TOOLS
 from bisheng.utils import payload
-from langchain.chains.base import Chain
+try:
+    from langchain.chains.base import Chain
+except ImportError:
+    from langchain_core.runnables import Runnable as Chain
 from loguru import logger
 
 

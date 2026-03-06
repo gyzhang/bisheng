@@ -7,13 +7,13 @@ from abc import ABC
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 import jieba.analyse
-from langchain.chains.llm import LLMChain
-from langchain.docstore.document import Document
-from langchain.embeddings.base import Embeddings
-from langchain.llms.base import BaseLLM
-from langchain.prompts.prompt import PromptTemplate
-from langchain.utils import get_from_dict_or_env
-from langchain.vectorstores.base import VectorStore
+from langchain_classic.chains.llm import LLMChain
+from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
+from langchain_core.language_models import BaseLLM
+from langchain_core.prompts import PromptTemplate
+from langchain_core.utils import get_from_dict_or_env
+from langchain_core.vectorstores import VectorStore
 from loguru import logger
 
 if TYPE_CHECKING:

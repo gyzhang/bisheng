@@ -8,26 +8,34 @@ import warnings
 from typing import Any, Dict, List, Optional
 from collections import defaultdict, namedtuple
 from dataclasses import dataclass
-from langchain_core.callbacks import CallbackManagerForChainRun
-from langchain_core.language_models import BaseLanguageModel
-from langchain_core.prompts import HumanMessagePromptTemplate, PromptTemplate
 
 try:
-    from llama_index.core.node_parser import SimpleNodeParser
-    from llama_index.core.schema import Document as LlamaindexDocument
-    from llama_index.core.schema import BaseNode
+    from langchain_core.callbacks import CallbackManagerForChainRun
 except ImportError:
-    raise ImportError(
-        "llama_index must be installed to use this function. "
-        "Please, install it with `pip install llama_index`."
-    )
-import numpy as np
-import numpy.testing as npt
-import pandas as pd
-from langchain.prompts import ChatPromptTemplate
-from langchain.docstore.document import Document
-# from langchain.schema.document import Document as LangchainDocument
-from langchain.chains.base import Chain
+    CallbackManagerForChainRun = None
+
+from langchain_core.language_models import BaseLanguageModel
+
+try:
+    from langchain_core.prompts import HumanMessagePromptTemplate, PromptTemplate
+except ImportError:
+    HumanMessagePromptTemplate = None
+    PromptTemplate = None
+
+try:
+    from langchain_core.documents import Document
+except ImportError:
+    Document = None
+
+try:
+    from langchain_core.runnables import Runnable as Chain
+except ImportError:
+    Chain = None
+
+try:
+    from langchain_core.prompts import ChatPromptTemplate
+except ImportError:
+    ChatPromptTemplate = None
 from numpy.random import default_rng
 from tqdm import tqdm
 from .prompt_v2 import (

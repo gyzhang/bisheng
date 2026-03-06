@@ -1,9 +1,9 @@
-from langchain.agents import AgentExecutor, ZeroShotAgent
-from langchain.agents.agent_toolkits.json.prompt import JSON_PREFIX, JSON_SUFFIX
-from langchain.agents.agent_toolkits.json.toolkit import JsonToolkit
-from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
-from langchain.base_language import BaseLanguageModel
-from langchain.chains import LLMChain
+from langchain_classic.agents import AgentExecutor, ZeroShotAgent
+from langchain_classic.agents.agent_toolkits.json.prompt import JSON_PREFIX, JSON_SUFFIX
+from langchain_classic.agents.agent_toolkits.json.toolkit import JsonToolkit
+from langchain_classic.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
+from langchain_core.language_models import BaseLanguageModel
+from langchain_classic.chains import LLMChain
 
 
 class MalfoyAgent(AgentExecutor):

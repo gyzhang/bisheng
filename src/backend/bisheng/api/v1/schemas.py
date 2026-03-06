@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
-from langchain.docstore.document import Document
+from langchain_core.documents import Document
 from orjson import orjson
 from pydantic import BaseModel, Field, model_validator, field_validator
 

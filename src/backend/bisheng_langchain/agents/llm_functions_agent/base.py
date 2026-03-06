@@ -7,16 +7,17 @@ from pydantic import model_validator
 
 from bisheng_langchain.chat_models.host_llm import HostQwenChat
 from bisheng_langchain.chat_models.proxy_llm import ProxyChatLLM
-from langchain.agents import BaseSingleActionAgent
-from langchain.callbacks.base import BaseCallbackManager
-from langchain.callbacks.manager import Callbacks
-from langchain.prompts.chat import (BaseMessagePromptTemplate, ChatPromptTemplate,
+from langchain_classic.agents import BaseSingleActionAgent
+from langchain_core.callbacks import BaseCallbackManager
+from langchain_core.callbacks import Callbacks
+from langchain_core.prompts.chat import (BaseMessagePromptTemplate, ChatPromptTemplate,
                                     HumanMessagePromptTemplate, MessagesPlaceholder)
-from langchain.schema import AgentAction, AgentFinish, BasePromptTemplate, OutputParserException
-from langchain.schema.language_model import BaseLanguageModel
-from langchain.schema.messages import AIMessage, BaseMessage, FunctionMessage, SystemMessage
-from langchain.tools import BaseTool
-from langchain.tools.convert_to_openai import format_tool_to_openai_function
+from langchain_core.agents import AgentAction, AgentFinish
+from langchain_core.prompts import BasePromptTemplate
+from langchain_core.exceptions import OutputParserException
+from langchain_core.language_models import BaseLanguageModel
+from langchain_core.messages import AIMessage, BaseMessage, FunctionMessage, SystemMessage
+from langchain_core.tools import BaseTool
 from langchain_core.agents import AgentActionMessageLog
 from langchain_openai import ChatOpenAI
 
@@ -162,7 +163,7 @@ class LLMFunctionsAgent(BaseSingleActionAgent):
 
     @property
     def functions(self) -> List[dict]:
-        return [dict(format_tool_to_openai_function(t)) for t in self.tools]
+        return [t.dict() for t in self.tools]
 
     def plan(
         self,

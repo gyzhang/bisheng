@@ -4,7 +4,7 @@ from typing import Callable, Dict, Optional
 
 import httpx
 from autogen import UserProxyAgent
-from langchain.base_language import BaseLanguageModel
+from langchain_core.language_models import BaseLanguageModel
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,8 @@ from typing import Any, Dict, Optional, Tuple, Union
 
 import httpx
 import yaml
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains.llm import LLMChain
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.callbacks import CallbackManagerForChainRun
 from langchain_core.language_models.base import LanguageModelLike
 from langchain_core.prompts import ChatPromptTemplate
@@ -143,7 +143,11 @@ class BishengRAGTool:
             else:
                 prompt = None
         self.prompt_inputs = prompt.input_variables
-        self.qa_chain = create_stuff_documents_chain(llm=self.llm, prompt=prompt)
+        from langchain_core.runnables import RunnableParallel
+        self.qa_chain = RunnableParallel(
+            context=RunnablePassthrough(),
+            question=RunnablePassthrough()
+        ) | prompt | self.llm
 
     def _post_init_retriever(self, retriever_type, **kwargs):
         retriever_classes = {
